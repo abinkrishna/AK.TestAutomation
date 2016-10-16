@@ -9,25 +9,25 @@ namespace AK.UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            Assert.pass();    
+            Assert.AreEqual(1, 1); 
 
         }
         [TestMethod]
         public void TestMethod2()
         {
-            Assert.pass();
+            Assert.AreEqual(1, 1);
 
         }
         [TestMethod]
         public void TestMethod4()
         {
-            Assert.pass();
+            Assert.AreEqual(1, 1);
 
         }
         [TestMethod]
         public void TestMethod5()
         {
-            Assert.pass();
+            Assert.AreEqual(1, 1);
 
         }
     }
