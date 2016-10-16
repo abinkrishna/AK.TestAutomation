@@ -27,7 +27,7 @@ namespace AK.UnitTest
         [TestMethod]
         public void TestMethod5()
         {
-            //Assert.pass();
+            Assert.pass();
 
         }
     }
