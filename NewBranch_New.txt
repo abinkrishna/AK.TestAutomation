@@ -1,3 +1,0 @@
-Line1: Added to Local Branch
-Line2: 2nd Update
-Line3: New
