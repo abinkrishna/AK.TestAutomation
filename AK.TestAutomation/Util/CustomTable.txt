@@ -1,0 +1,244 @@
+package com
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+
+public class CustomTable {
+	
+	
+	public List<WebElement> getTableHeader(WebElement table){
+		return table.findElements(By.xpath("./thead/tr/th"));
+	}
+	
+
+    public List<WebElement> getTableHeaders(WebElement table){
+		return table.findElements(By.xpath("./tbody/tr/th"));
+	}
+	
+	public WebElement getTableHeaderByColumnNo(WebElement table,int colNo){
+		return table.findElement(By.xpath("./tbody/tr/th["+colNo+"]"));
+	}
+
+	public WebElement getTable(WebElement element){
+		return element.findElement(By.xpath(".//table"));
+	}
+
+	public List<ArrayList<String>> getTableData(WebElement table){
+		List<WebElement> rows = table.findElements(By.xpath(".//tbody//tr//td//.."));
+		List<ArrayList<String>> rowsData = new ArrayList<ArrayList<String>>();
+
+		for(WebElement row:rows){
+			List<WebElement> rowElements = row.findElements(By.xpath(".//td"));
+			ArrayList<String> rowData = new ArrayList<String>();
+			
+			for(WebElement column:rowElements){
+				rowData.add(column.getText().toString());
+			}
+			
+			rowsData.add(rowData);
+		}
+		
+		return rowsData;
+	}
+
+	
+	public List<WebElement> getTableRows(WebElement table){
+		return table.findElements(By.xpath("./tbody/tr"));
+	}
+	
+	public List<WebElement> getTableColumns(WebElement table,int columnNo){
+		return table.findElements(By.xpath("./tbody/tr/td["+columnNo+"]"));
+	}
+	
+	public List<String> getColumnData(WebElement table,int columnNo){
+		List<WebElement> columnElements = table.findElements(By.xpath("./tbody/tr/td["+columnNo+"]"));
+		List<String> columnData = new ArrayList<String>();
+		
+		for(WebElement column:columnElements){
+			columnData.add(column.getText().toString());
+		}
+		
+		return columnData;
+	}
+	
+	
+	public List<WebElement> getAllColumns(WebElement table){
+		return table.findElements(By.xpath("./tbody/tr/td"));
+	}
+	
+	public List<String> getColumnDataByLocator(WebElement table,String columnLocator,String valueType){
+			List<WebElement> columnElements = table.findElements(By.xpath(columnLocator));
+			List<String> columnData = new ArrayList<String>();
+			
+			for(WebElement column:columnElements){
+				if(valueType.equalsIgnoreCase("attribute"))
+					columnData.add(column.getAttribute("value").toString());
+				else
+					columnData.add(column.getText().toString());
+			}
+			
+			return columnData;
+		}
+	
+	public List<String> getRowData(WebElement table,int rowNo){
+		List<WebElement> rows = table.findElements(By.xpath("./tbody/tr"));
+		List<WebElement> row= null;
+		List<String> rowData = new ArrayList<String>();
+		//System.out.println("No of Rows"+ rows.size());
+		if(rowNo <= rows.size()){
+			row = rows.get(rowNo-1).findElements(By.xpath("./td"));
+		
+			for(WebElement column:row){
+				rowData.add(column.getText().toString());
+			}
+			
+		}
+		
+		return rowData;
+	}
+	
+	
+	public List<WebElement> getRowElements(WebElement table,int rowNo){
+		List<WebElement> rows = table.findElements(By.xpath("./tbody/tr/td/.."));
+		List<WebElement> row= null;
+		
+		if(rowNo <= rows.size()){
+			row = rows.get(rowNo-1).findElements(By.xpath("./td"));
+		}
+		
+		return row;
+	}
+	
+	
+	public WebElement getTableRow(WebElement table,int rowNo){
+		List<WebElement> rows = table.findElements(By.xpath("./tbody/tr"));
+		WebElement row= null;
+		
+		if(rowNo <= rows.size())
+			return rows.get(rowNo-1);
+		
+		return row;
+	}
+	
+	public List<WebElement> getTableRowByLocator(WebElement table,String rowLocator){
+		return table.findElements(By.xpath(rowLocator));
+	}
+	
+	public int getColumnNo(WebElement table,String columnName){
+		List<WebElement> header = table.findElements(By.xpath("./tbody/tr/th"));
+		int columnNo = 0;
+		
+		for(int i=0;i<header.size();i++){
+			if(header.get(i).getText().equalsIgnoreCase(columnName)){
+				columnNo = i;
+				break;
+			}
+		}
+		
+		return columnNo;
+	}
+	
+	public int getRowNoByColumnValue(WebElement table,String columnName,String columnValue){
+		int columnNo = getColumnNo(table,columnName);
+		int rowNo=0;
+		List<WebElement> column = table.findElements(By.xpath(".//tbody//tr//td[@idx='"+columnNo+"']"));
+		
+		for(int i=0;i<column.size();i++){
+			if(column.get(i).getText().equalsIgnoreCase(columnValue)){
+				rowNo = i;
+				break;
+			}
+		}
+		
+		return rowNo;
+		
+	}
+
+	public WebElement getRowElementByColumnValue(WebElement table,String columnName,String columnValue){
+		int columnNo = getColumnNo(table,columnName);
+		WebElement rowElement=null;
+		List<WebElement> column = table.findElements(By.xpath("./tbody/tr/td[@idx='"+columnNo+"']"));
+		
+		for(WebElement element:column){
+			if(element.getText().equalsIgnoreCase(columnValue)){
+				rowElement = element;
+				break;
+			}
+		}
+		
+		return rowElement;
+		
+	}
+	
+	public boolean isTableElementDisabled(WebElement element){
+		try{
+			return element.getAttribute("class").contains("disabled");
+		}catch(NoSuchElementException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
+	public boolean isTableCellEditable(WebElement element){
+		try{
+			List<WebElement> childs = element.findElements(By.xpath(".//*"));
+			return childs.size() == 0;
+		}catch(NoSuchElementException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public List<String> getColumnDataCalls(WebElement table,int columnNo,int rowNo){
+		
+			List<WebElement> columnElements = table.findElements(By.xpath("./tbody/tr["+rowNo+"]/td["+columnNo+"]"));
+		
+			List<String> columnData = new ArrayList<String>();
+			
+			for(WebElement column:columnElements){
+				columnData.add(column.getText().toString().toLowerCase());
+			}
+		return columnData;
+		}
+	
+	public int getRowCount(WebElement table){
+	
+			List<WebElement> rows = table.findElements(By.xpath("./tbody/tr"));
+			return rows.size();
+			
+	
+	}
+	
+	public WebElement getRowElementByColumnId(WebElement table,int rowNo,String columnId){
+	
+		WebElement column = table.findElement(By.xpath("./tbody/tr["+rowNo+"]/td[@id='"+columnId+"']"));
+
+		return column;
+		
+	}
+	
+	public String getCellText(WebElement table,int rowNo,int columnNo){
+		
+			WebElement columnElement = table.findElement(By.xpath("./tbody/tr["+rowNo+"]/td["+columnNo+"]"));	
+			return columnElement.getText().toString();
+		}
+	
+	
+	public WebElement getCell(WebElement table,int rowNo,int columnNo){
+		
+		WebElement columnElement = table.findElement(By.xpath("./tbody/tr["+rowNo+"]/td["+columnNo+"]"));	
+		return columnElement;
+	}
+	
+}
+
+
+
+
