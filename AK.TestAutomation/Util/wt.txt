@@ -1,0 +1,245 @@
+package com;
+
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+public class CustomWait {
+		
+	  private final WebDriver webDriver ; 
+	  public WebDriverWait explicitWait;
+		
+	   public CustomWait(SharedDriver driver) {
+		   this.webDriver = driver;
+		   this.explicitWait = new WebDriverWait(webDriver,WaitTimeConfig.EXPLICITWAIT.getWaitTime());
+	   }
+	
+	public boolean waitForTitle(String expectedTitle){
+		boolean titleMatch = false;
+		
+		try{
+			titleMatch = explicitWait.until(ExpectedConditions.titleIs(expectedTitle));
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for title function");
+		}
+		
+		return titleMatch;
+	}
+
+	public boolean waitForTitleContains(String expectedTitle){
+		boolean titleMatch = false;
+		
+		try{
+			titleMatch = explicitWait.until(ExpectedConditions.titleContains(expectedTitle));
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for title contains function");
+		}
+		
+		return titleMatch;
+	}
+
+	public boolean waitForElementInvisibility(String elementLocator){
+		boolean elementNotDisplayed = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(elementLocator)));
+			elementNotDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for element function");
+		}
+		
+		return elementNotDisplayed;
+	}
+	
+	public boolean waitForElementVisibility(WebElement elementLocator){
+		boolean elementDisplayed = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.visibilityOf(elementLocator));
+			elementDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for element function");
+		}
+		
+		return elementDisplayed;
+	}
+	
+	
+	public boolean waitForAlert(){
+		boolean alertDisplayed = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.alertIsPresent());
+			alertDisplayed = true;
+		}catch(Exception e){
+			//System.out.println("Alert not displayed");
+			alertDisplayed = false;
+		}
+		
+		return alertDisplayed;
+	}
+	
+	public boolean waitForElement(WebElement element){
+		boolean elementDisplayed = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.visibilityOf(element));
+			elementDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for element function");
+			elementDisplayed = false;
+		}
+		
+		return elementDisplayed;
+	}
+	public boolean waitForElements(List<WebElement> webe){
+		boolean elementDisplayed = false;
+		
+		try{
+			for(WebElement element : webe)
+			{
+			explicitWait.until(ExpectedConditions.visibilityOf(element));
+			elementDisplayed = true;
+			}
+		}catch(Exception e){
+			//System.out.println("Exception occurred in the wait for element function");
+			elementDisplayed = false;
+		}
+		
+		return elementDisplayed;
+	}
+	
+	public boolean waitForElementToBeClickable(WebElement element){
+		boolean isElementClickable = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.elementToBeClickable(element));
+			isElementClickable = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for element function");
+		}
+		
+		return isElementClickable;
+	}
+
+	public boolean waitForFrame(String id){
+		boolean frameMatch = false;
+		
+		try{
+			frameMatch = explicitWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(id)) != null;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for frame function");
+		}
+		
+		return frameMatch ;
+	}
+	
+
+	public boolean waitForNewWindow(){
+		boolean windowDisplayed = false;
+		try{
+		ExpectedCondition<Boolean> windowCondition = new ExpectedCondition<Boolean>() {
+			  public Boolean apply(WebDriver driver) {
+				
+				  return driver.getWindowHandles().size() >= 2;
+			  }
+			};
+			explicitWait.until(windowCondition);
+			windowDisplayed = true;
+		}catch(Exception e){
+			e.getMessage();
+		}
+		
+		return windowDisplayed;
+
+	}
+	
+	public boolean waitFor3Windows(){
+		boolean windowDisplayed = false;
+		try{
+		ExpectedCondition<Boolean> windowCondition = new ExpectedCondition<Boolean>() {
+			  public Boolean apply(WebDriver driver) {
+				
+				  return driver.getWindowHandles().size() >= 3;
+			  }
+			};
+			explicitWait.until(windowCondition);
+			windowDisplayed = true;
+		}catch(Exception e){
+			e.getMessage();
+		}
+		
+		return windowDisplayed;
+	}
+	
+	public boolean waitForElementText(WebElement element,String text){
+		boolean isElementDisplayed = false;
+		
+		try{
+			explicitWait.until(ExpectedConditions.textToBePresentInElement(element, text));
+			isElementDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for element function");
+		}
+		
+		return isElementDisplayed;
+	}
+	
+	public boolean waitForOptionsToLoad(final Select element){
+		boolean isOptionsDisplayed = false;
+		
+		try{
+			ExpectedCondition<Boolean> windowCondition = new ExpectedCondition<Boolean>() {
+				public Boolean apply(WebDriver driver) {
+					List<WebElement> allOptions = element.getOptions();
+					
+					if(allOptions.get(0).getText().equals("") && allOptions.size()>0)
+						allOptions.remove(0);
+					
+				    return (!allOptions.isEmpty());
+				  }
+				};
+				explicitWait.until(windowCondition);
+				isOptionsDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for OptionsToLoad function");
+		}
+		
+		return isOptionsDisplayed;
+	}
+	
+	public boolean waitForTitleorElementToDisplay(final WebElement element,final String title){
+		boolean isPageDisplayed = false;
+		
+		try{
+			ExpectedCondition<Boolean> windowCondition = new ExpectedCondition<Boolean>() {
+				public Boolean apply(WebDriver driver) {
+					boolean titleMatched = false;
+
+		               String windowTitle = driver.getTitle();
+		               
+		                  titleMatched = windowTitle.startsWith(title);
+		               
+		                  if(!titleMatched){
+		                	  titleMatched =  element.isDisplayed();
+		                  }
+		               return titleMatched;
+		           }
+				};
+				explicitWait.until(windowCondition);
+				isPageDisplayed = true;
+		}catch(Exception e){
+			System.out.println("Exception occurred in the wait for title or elelement function");
+		}
+		
+		return isPageDisplayed;
+	}
+
+}
